@@ -11,6 +11,11 @@ class LaravelDB2DOCServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                \CleaniqueCoders\LaravelDB2DOC\Console\Commands\LaravelDb2DocCommand::class,
+            ]);
+        }
     }
 
     /**

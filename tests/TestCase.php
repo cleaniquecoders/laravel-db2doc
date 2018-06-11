@@ -11,9 +11,9 @@ class TestCase extends \Orchestra\Testbench\TestCase
     {
         parent::setUp();
 
-        // $this->loadLaravelMigrations(['--database' => 'testbench']);
+        $this->loadLaravelMigrations(['--database' => 'testbench']);
 
-        // $this->artisan('migrate', ['--database' => 'testbench']);
+        $this->artisan('migrate', ['--database' => 'testbench']);
     }
 
     /**
