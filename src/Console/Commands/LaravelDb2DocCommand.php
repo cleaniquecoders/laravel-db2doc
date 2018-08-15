@@ -13,7 +13,7 @@ class LaravelDb2DocCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'db:2doc {--database=default} {--format=md}';
+    protected $signature = 'db:2doc {--database=} {--format=md}';
 
     /**
      * The console command description.
@@ -66,7 +66,7 @@ class LaravelDb2DocCommand extends Command
             mkdir(storage_path('app/db2doc'));
         }
 
-        $this->database_connection = $this->option('database');
+        $this->database_connection = $this->option('database') ?? config('database.default');
         $this->format              = $this->option('format');
         $this->connection          = DB::connection($this->database_connection)->getDoctrineConnection();
         $this->schema              = $this->connection->getSchemaManager();
