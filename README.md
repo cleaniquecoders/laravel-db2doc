@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.org/cleanique-coders/laravel-db2doc.svg?branch=master)](https://travis-ci.org/cleanique-coders/laravel-db2doc) [![Latest Stable Version](https://poser.pugx.org/cleanique-coders/laravel-db2doc/v/stable)](https://packagist.org/packages/cleanique-coders/laravel-db2doc) [![Total Downloads](https://poser.pugx.org/cleanique-coders/laravel-db2doc/downloads)](https://packagist.org/packages/cleanique-coders/laravel-db2doc) [![License](https://poser.pugx.org/cleanique-coders/laravel-db2doc/license)](https://packagist.org/packages/cleanique-coders/laravel-db2doc)
+[![Build Status](https://travis-ci.org/cleaniquecoders/laravel-db2doc.svg?branch=master)](https://travis-ci.org/cleaniquecoders/laravel-db2doc) [![Latest Stable Version](https://poser.pugx.org/cleaniquecoders/laravel-db2doc/v/stable)](https://packagist.org/packages/cleaniquecoders/laravel-db2doc) [![Total Downloads](https://poser.pugx.org/cleaniquecoders/laravel-db2doc/downloads)](https://packagist.org/packages/cleaniquecoders/laravel-db2doc) [![License](https://poser.pugx.org/cleaniquecoders/laravel-db2doc/license)](https://packagist.org/packages/cleaniquecoders/laravel-db2doc)
 
 ## About Your Package
 
@@ -7,10 +7,10 @@ Laravel Db2Doc enable you to generate your database schema to markdown or JSON f
 
 ## Installation
 
-1. In order to install `cleanique-coders/laravel-db2doc` in your Laravel project, just run the *composer require* command from your terminal:
+1. In order to install `cleaniquecoders/laravel-db2doc` in your Laravel project, just run the *composer require* command from your terminal:
 
 ```
-$ composer require cleanique-coders/laravel-db2doc
+$ composer require cleaniquecoders/laravel-db2doc
 ```
 
 2. Then in your `config/app.php` add the following to the providers array:
@@ -43,7 +43,7 @@ $ vendor/bin/phpunit -v --coverage-text --colors=never --stderr
 
 ## Contributing
 
-Thank you for considering contributing to the `cleanique-coders/laravel-db2doc`!
+Thank you for considering contributing to the `cleaniquecoders/laravel-db2doc`!
 
 ### Bug Reports
 
@@ -55,7 +55,7 @@ Remember, bug reports are created in the hope that others with the same problem 
 
 ## Coding Style
 
-`cleanique-coders/laravel-db2doc` follows the PSR-2 coding standard and the PSR-4 autoloading standard. 
+`cleaniquecoders/laravel-db2doc` follows the PSR-2 coding standard and the PSR-4 autoloading standard. 
 
 You may use PHP CS Fixer in order to keep things standardised. PHP CS Fixer configuration can be found in `.php_cs`.
 
