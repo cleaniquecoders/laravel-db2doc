@@ -1,7 +1,7 @@
 {
     "name": "cleaniquecoders/laravel-db2doc",
-    "description": "Built with Laravel Standalone Package Creator",
-    "keywords": ["package", "laravel"],
+    "description": "Laravel Db2Doc generate your database schema documentation easily.",
+    "keywords": ["package", "laravel", "database", "documentation"],
     "license": "MIT",
     "authors": [
         {

@@ -4,6 +4,7 @@ namespace CleaniqueCoders\LaravelDB2DOC\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class LaravelDb2DocCommand extends Command
 {
@@ -12,7 +13,7 @@ class LaravelDb2DocCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'db2doc {--database=default} {--format=md}';
+    protected $signature = 'db:2doc {--database=default} {--format=md}';
 
     /**
      * The console command description.
@@ -36,13 +37,41 @@ class LaravelDb2DocCommand extends Command
      */
     public function handle()
     {
-        $database_connection = $this->option('database');
-        $format              = $this->option('format');
+        /*
+         * Initialize
+         */
+        $this->init();
 
-        $connection  = DB::connection($database_connection)->getDoctrineConnection();
-        $schema      = $connection->getSchemaManager();
-        $tables      = $schema->listTableNames();
-        $collections = [];
+        /*
+         * Generate Table & Column Data Structure
+         */
+        $this->generateDataStructure();
+
+        /*
+         * Generate Document
+         */
+        $this->generateDocument();
+    }
+
+    private function init()
+    {
+        if (! file_exists(storage_path('app/db2doc'))) {
+            mkdir(storage_path('app/db2doc'));
+        }
+
+        $this->database_connection = $this->option('database');
+        $this->format              = $this->option('format');
+        $this->connection          = DB::connection($this->database_connection)->getDoctrineConnection();
+        $this->schema              = $this->connection->getSchemaManager();
+        $this->tables              = $this->schema->listTableNames();
+    }
+
+    private function generateDataStructure()
+    {
+        $tables = $this->tables;
+        $schema = $this->schema;
+
+        $this->collections = [];
         foreach ($tables as $table) {
             $columns = $schema->listTableColumns($table);
             $this->info('Table: ' . $table);
@@ -53,46 +82,52 @@ class LaravelDb2DocCommand extends Command
                 $details['default']    = (true == $column->getDefault() ? 'Yes' : 'No');
                 $details['nullable']   = (true == ! $column->getNotNull() ? 'Yes' : 'No');
                 $details['comment']    = $column->getComment();
-                $collections[$table][] = $details;
+                $this->collections[$table][] = $details;
             }
         }
-
-        if ('json' == $format) {
-            $output   = json_encode($collections);
-            $filename = config('app.name') . ' Database Schema.json';
-        } elseif ('md' == $format) {
-            $schema          = $this->render_markdown_content($collections);
-            $stub            = $this->getStub();
-            $database_config = config('database.' . $database_connection);
-            $output          = str_replace([
-                'APP_NAME',
-                'DB_CONNECTION', 'DB_HOST', 'DB_PORT', 'DB_DATABASE',
-                'SCHEMA_CONTENT',
-            ], [
-                config('app.name'),
-                $database_connection, $database_config['host'], $database_config['port'], $database_config['database'],
-                $schema,
-            ], $stub);
-            $filename = config('app.name') . ' Database Schema.md';
-        }
-
-        if (! file_exists(storage_path('app/db2doc'))) {
-            mkdir(storage_path('app/db2doc'));
-        }
-
-        file_put_contents(storage_path('app/db2doc/' . $filename), $output);
     }
 
-    public function getStub()
+    private function generateDocument()
     {
-        return __DIR__ . 'stubs/header.stub';
+        switch ($this->format) {
+            case 'json':
+                $rendered = $this->render_json_content();
+                break;
+
+            default:
+                $rendered  = $this->render_markdown_content();
+                break;
+        }
+        $filename = $rendered['filename'];
+        $output   = $rendered['output'];
+        $path     = storage_path('app/db2doc/' . $filename);
+        if (file_exists($path)) {
+            unlink($path);
+        }
+        file_put_contents($path, $output);
     }
 
-    public function render_markdown_content($collections)
+    private function getStub()
     {
-        $output = [];
+        return file_get_contents(__DIR__ . '/stubs/header.stub');
+    }
+
+    private function render_json_content()
+    {
+        $collections = $this->collections;
+
+        return [
+            'output'   => json_encode($collections),
+            'filename' => config('app.name') . ' Database Schema.json',
+        ];
+    }
+
+    private function render_markdown_content()
+    {
+        $collections = $this->collections;
+        $output      = [];
         foreach ($collections as $table => $properties) {
-            $output[] = '### ' . $table . PHP_EOL . PHP_EOL;
+            $output[] = '### ' . Str::title($table) . PHP_EOL . PHP_EOL;
             $output[] = '| Column | Type | Length | Default | Nullable | Comment |' . PHP_EOL;
             $output[] = '|--------|------|--------|---------|----------|---------|' . PHP_EOL;
             foreach ($properties as $key => $value) {
@@ -105,6 +140,24 @@ class LaravelDb2DocCommand extends Command
             $output[] = PHP_EOL;
         }
 
-        return join('', $output);
+        $schema              = join('', $output);
+        $stub                = $this->getStub();
+        $database_config     = config('database.' . $this->database_connection);
+        $output              = str_replace([
+                'APP_NAME',
+                'DB_CONNECTION', 'DB_HOST', 'DB_PORT', 'DB_DATABASE',
+                'SCHEMA_CONTENT',
+            ], [
+                config('app.name'),
+                $this->database_connection, $database_config['host'], $database_config['port'], $database_config['database'],
+                $schema,
+            ], $stub);
+
+        $filename = config('app.name') . ' Database Schema.md';
+
+        return [
+            'output'   => $output,
+            'filename' => $filename,
+        ];
     }
 }
