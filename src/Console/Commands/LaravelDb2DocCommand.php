@@ -22,6 +22,13 @@ class LaravelDb2DocCommand extends Command
      */
     protected $description = 'Generate database schema to markdown (by default)';
 
+    public $database_connection;
+    public $format;
+    public $connection;
+    public $schema;
+    public $tables;
+    public $collections = [];
+
     /**
      * Create a new command instance.
      */
