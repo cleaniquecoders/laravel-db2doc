@@ -86,14 +86,13 @@ class LaravelDb2DocCommand extends Command
             $this->info('Table: ' . $table);
             foreach ($columns as $column) {
                 $columnName = $column->getName();
+                $columnType = $column->getType()->getName();
                 if (isset($foreignKeys[$columnName])) {
                     $foreignColumn = $foreignKeys[$columnName];
                     $foreignTable  = $foreignColumn->getForeignTableName();
                     $columnType    = 'fk -> ' . $foreignTable;
-                } else {
-                    $columnType    = $column->getType()->getName();
                 }
-                
+
                 $details['column']           = $columnName;
                 $details['type']             = $columnType;
                 $details['length']           = $column->getLength() && 255 !== $column->getLength() ? $column->getLength() : null;
