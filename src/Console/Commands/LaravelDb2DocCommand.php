@@ -83,7 +83,6 @@ class LaravelDb2DocCommand extends Command
             $foreignKeys = collect($schema->listTableForeignKeys($table))->keyBy(function ($foreignColumn) {
                 return $foreignColumn->getLocalColumns()[0];
             });
-            
             $this->info('Table: ' . $table);
             foreach ($columns as $column) {
                 $columnName = $column->getName();
@@ -102,7 +101,6 @@ class LaravelDb2DocCommand extends Command
                 $details['default']          = (true == $column->getDefault() ? 'Yes' : 'No');
                 $details['nullable']         = (true === ! $column->getNotNull() ? 'Yes' : 'No');
                 $details['comment']          = $column->getComment();
-
                 $this->collections[$table][] = $details;
             }
         }
