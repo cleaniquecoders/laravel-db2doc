@@ -8,6 +8,12 @@ use Illuminate\Support\Str;
 
 class LaravelDb2DocCommand extends Command
 {
+    public $database_connection;
+    public $format;
+    public $connection;
+    public $schema;
+    public $tables;
+    public $collections = [];
     /**
      * The name and signature of the console command.
      *
@@ -21,13 +27,6 @@ class LaravelDb2DocCommand extends Command
      * @var string
      */
     protected $description = 'Generate database schema to markdown (by default)';
-
-    public $database_connection;
-    public $format;
-    public $connection;
-    public $schema;
-    public $tables;
-    public $collections = [];
 
     /**
      * Create a new command instance.
@@ -83,12 +82,12 @@ class LaravelDb2DocCommand extends Command
             $columns = $schema->listTableColumns($table);
             $this->info('Table: ' . $table);
             foreach ($columns as $column) {
-                $details['column']     = $column->getName();
-                $details['type']       = $column->getType()->getName();
-                $details['length']     = $column->getLength() && 255 !== $column->getLength() ? $column->getLength() : null;
-                $details['default']    = (true == $column->getDefault() ? 'Yes' : 'No');
-                $details['nullable']   = (true == ! $column->getNotNull() ? 'Yes' : 'No');
-                $details['comment']    = $column->getComment();
+                $details['column']           = $column->getName();
+                $details['type']             = $column->getType()->getName();
+                $details['length']           = $column->getLength() && 255 !== $column->getLength() ? $column->getLength() : null;
+                $details['default']          = (true == $column->getDefault() ? 'Yes' : 'No');
+                $details['nullable']         = (true == ! $column->getNotNull() ? 'Yes' : 'No');
+                $details['comment']          = $column->getComment();
                 $this->collections[$table][] = $details;
             }
         }
@@ -102,7 +101,7 @@ class LaravelDb2DocCommand extends Command
                 break;
 
             default:
-                $rendered  = $this->render_markdown_content();
+                $rendered = $this->render_markdown_content();
                 break;
         }
         $filename = $rendered['filename'];
@@ -147,10 +146,10 @@ class LaravelDb2DocCommand extends Command
             $output[] = PHP_EOL;
         }
 
-        $schema              = join('', $output);
-        $stub                = $this->getStub();
-        $database_config     = config('database.' . $this->database_connection);
-        $output              = str_replace([
+        $schema          = join('', $output);
+        $stub            = $this->getStub();
+        $database_config = config('database.' . $this->database_connection);
+        $output          = str_replace([
                 'APP_NAME',
                 'DB_CONNECTION', 'DB_HOST', 'DB_PORT', 'DB_DATABASE',
                 'SCHEMA_CONTENT',
