@@ -86,7 +86,7 @@ class LaravelDb2DocCommand extends Command
                 $details['type']             = $column->getType()->getName();
                 $details['length']           = $column->getLength() && 255 !== $column->getLength() ? $column->getLength() : null;
                 $details['default']          = (true == $column->getDefault() ? 'Yes' : 'No');
-                $details['nullable']         = (true == ! $column->getNotNull() ? 'Yes' : 'No');
+                $details['nullable']         = (true === ! $column->getNotNull() ? 'Yes' : 'No');
                 $details['comment']          = $column->getComment();
                 $this->collections[$table][] = $details;
             }
