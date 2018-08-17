@@ -3,7 +3,11 @@
 
 ## About Your Package
 
-Laravel Db2Doc enable you to generate your database schema to markdown or JSON format. These to make your documentation for database much easier.
+Laravel Db2Doc enable you to generate your database schema to markdown or JSON format. 
+
+<p align="center">
+    <img src="laravel-db2doc.png" alt="Laravel Db2Doc"/>
+</p>
 
 ## Installation
 
@@ -29,7 +33,13 @@ CleaniqueCoders\LaravelDB2DOC\LaravelDB2DOCServiceProvider::class,
 
 Run `php artisan db:2doc`, to generate the document in JSON format by default. File generated at `storage/app/db2doc` directory.
 
-You may pass `--database` option to specify which database connection to use. You also have the option `--format` to choose between JSON or Markdown format. By default it's in JSON format.
+Run `php artisan db:2doc --database=sqlite` option to specify which database connection to use. 
+
+Run `php artisan db:2doc --format=json` to export output as JSON. Default is in markdown format.
+
+Run `php artisan db:2doc --emoji` to have output as emoji.
+
+Run `php artisan db:2doc --path=path/to/other/output` to have output to other location.
 
 ## Test
 
