@@ -79,11 +79,22 @@ class LaravelDb2DocCommand extends Command
 
         $this->collections = [];
         foreach ($tables as $table) {
-            $columns = $schema->listTableColumns($table);
+            $columns     = $schema->listTableColumns($table);
+            $foreignKeys = collect($schema->listTableForeignKeys($table))->keyBy(function ($foreignColumn) {
+                return $foreignColumn->getLocalColumns()[0];
+            });
             $this->info('Table: ' . $table);
             foreach ($columns as $column) {
-                $details['column']           = $column->getName();
-                $details['type']             = $column->getType()->getName();
+                $columnName = $column->getName();
+                $columnType = $column->getType()->getName();
+                if (isset($foreignKeys[$columnName])) {
+                    $foreignColumn = $foreignKeys[$columnName];
+                    $foreignTable  = $foreignColumn->getForeignTableName();
+                    $columnType    = 'fk -> ' . $foreignTable;
+                }
+
+                $details['column']           = $columnName;
+                $details['type']             = $columnType;
                 $details['length']           = $column->getLength() && 255 !== $column->getLength() ? $column->getLength() : null;
                 $details['default']          = (true == $column->getDefault() ? 'Yes' : 'No');
                 $details['nullable']         = (true === ! $column->getNotNull() ? 'Yes' : 'No');
