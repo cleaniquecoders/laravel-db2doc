@@ -140,7 +140,7 @@ class LaravelDb2DocCommand extends Command
     private function getExpression($status)
     {
         if($this->option('emoji')) {
-            return $status ? "\u{0527}" : "\u{4C27}";
+            return $status ? "\u{2705}" : "\u{274C}";
         }
         
         return $status ? 'Yes' : 'No';
