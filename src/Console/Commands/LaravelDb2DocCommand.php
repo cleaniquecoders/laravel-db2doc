@@ -139,7 +139,7 @@ class LaravelDb2DocCommand extends Command
 
     private function getDefaultValue($column) 
     {
-        if($column->getType() == 'boolean') {
+        if($column->getType()->getName() == 'boolean') {
             return $column->getDefault() ? 'true' : 'false';
         }
 
