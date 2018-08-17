@@ -125,7 +125,7 @@ class LaravelDb2DocCommand extends Command
         }
         $filename = $rendered['filename'];
         $output   = $rendered['output'];
-        $path     = $this->output_path . $filename;
+        $path     = $this->output_path . DIRECTORY_SEPARATOR . $filename;
         if (file_exists($path)) {
             unlink($path);
         }
