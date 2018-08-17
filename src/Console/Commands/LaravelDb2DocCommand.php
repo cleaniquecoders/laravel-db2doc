@@ -25,7 +25,7 @@ class LaravelDb2DocCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'db:2doc {--database=} {--format=md} {--path=}';
+    protected $signature = 'db:2doc {--database=} {--format=md} {--path=} {--emoji}';
 
     /**
      * The console command description.
@@ -104,8 +104,8 @@ class LaravelDb2DocCommand extends Command
                 $details['column']           = $columnName;
                 $details['type']             = $columnType;
                 $details['length']           = $column->getLength() && 255 !== $column->getLength() ? $column->getLength() : null;
-                $details['default']          = (true == $column->getDefault() ? 'Yes' : 'No');
-                $details['nullable']         = (true === ! $column->getNotNull() ? 'Yes' : 'No');
+                $details['default']          = $this->getExpression(true == $column->getDefault()),
+                $details['nullable']         = $this->getExpression(true === ! $column->getNotNull());
                 $details['comment']          = $column->getComment();
                 $this->collections[$table][] = $details;
             }
@@ -136,6 +136,16 @@ class LaravelDb2DocCommand extends Command
     {
         return file_get_contents(__DIR__ . '/stubs/header.stub');
     }
+
+    private function getExpression($status)
+    {
+        if($this->option('emoji')) {
+            return $status ? "\u{0527}" : "\u{4C27}";
+        }
+        
+        return $status ? 'Yes' : 'No';
+    }
+
 
     private function render_json_content()
     {
