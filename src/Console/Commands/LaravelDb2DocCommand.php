@@ -139,7 +139,7 @@ class LaravelDb2DocCommand extends Command
 
     private function determineUnsigned($column)
     {
-        return (true === $column->getUnsigned()) ? '(unsigned)';
+        return (true === $column->getUnsigned()) ? '(unsigned)' : '';
     }
 
     private function getDefaultValue($column) 
