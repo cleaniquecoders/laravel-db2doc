@@ -104,7 +104,7 @@ class LaravelDb2DocCommand extends Command
                 $details['column']           = $columnName;
                 $details['type']             = $columnType;
                 $details['length']           = $column->getLength() && 255 !== $column->getLength() ? $column->getLength() : null;
-                $details['default']          = $column->getDefault();
+                $details['default']          = $this->getDefaultValue($column);
                 $details['nullable']         = $this->getExpression(true === ! $column->getNotNull());
                 $details['comment']          = $column->getComment();
                 $this->collections[$table][] = $details;
@@ -135,6 +135,15 @@ class LaravelDb2DocCommand extends Command
     private function getStub()
     {
         return file_get_contents(__DIR__ . '/stubs/header.stub');
+    }
+
+    private function getDefaultValue($column) 
+    {
+        if($column->getType() == 'boolean') {
+            return $column->getDefault() ? 'true' : 'false';
+        }
+
+        return $column->getDefault();
     }
 
     private function getExpression($status)
