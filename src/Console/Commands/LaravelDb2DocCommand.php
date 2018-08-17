@@ -102,7 +102,7 @@ class LaravelDb2DocCommand extends Command
                 }
 
                 $details['column']           = $columnName;
-                $details['type']             = $columnType;
+                $details['type']             = $columnType . $this->determineUnsigned($column);
                 $details['length']           = $column->getLength() && 255 !== $column->getLength() ? $column->getLength() : null;
                 $details['default']          = $this->getDefaultValue($column);
                 $details['nullable']         = $this->getExpression(true === ! $column->getNotNull());
@@ -135,6 +135,11 @@ class LaravelDb2DocCommand extends Command
     private function getStub()
     {
         return file_get_contents(__DIR__ . '/stubs/header.stub');
+    }
+
+    private function determineUnsigned($column)
+    {
+        return (true === $column->getUnsigned()) ? '(unsigned)';
     }
 
     private function getDefaultValue($column) 
