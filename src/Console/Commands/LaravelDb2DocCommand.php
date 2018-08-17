@@ -4,7 +4,6 @@ namespace CleaniqueCoders\LaravelDB2DOC\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class LaravelDb2DocCommand extends Command
 {
@@ -14,12 +13,19 @@ class LaravelDb2DocCommand extends Command
     public $schema;
     public $tables;
     public $collections = [];
+
+    /**
+     * Output Path.
+     *
+     * @var string
+     */
+    public $output_path;
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'db:2doc {--database=} {--format=md}';
+    protected $signature = 'db:2doc {--database=} {--format=md} {--path=}';
 
     /**
      * The console command description.
@@ -61,8 +67,10 @@ class LaravelDb2DocCommand extends Command
 
     private function init()
     {
-        if (! file_exists(storage_path('app/db2doc'))) {
-            mkdir(storage_path('app/db2doc'));
+        $this->output_path = $this->option('path') ?? storage_path('app/db2doc');
+
+        if (! file_exists($this->output_path)) {
+            mkdir($this->output_path);
         }
 
         $this->database_connection = $this->option('database') ?? config('database.default');
@@ -80,7 +88,7 @@ class LaravelDb2DocCommand extends Command
         $this->collections = [];
         foreach ($tables as $table) {
             $columns     = $schema->listTableColumns($table);
-            $foreignKeys = collect($schema->listTableForeignKeys($table))->keyBy(function ($foreignColumn) {
+            $foreignKeys = collect($schema->listTableForeignKeys($table))->keyBy(function($foreignColumn) {
                 return $foreignColumn->getLocalColumns()[0];
             });
             $this->info('Table: ' . $table);
@@ -90,7 +98,7 @@ class LaravelDb2DocCommand extends Command
                 if (isset($foreignKeys[$columnName])) {
                     $foreignColumn = $foreignKeys[$columnName];
                     $foreignTable  = $foreignColumn->getForeignTableName();
-                    $columnType    = 'fk -> ' . $foreignTable;
+                    $columnType    = 'FK -> ' . $foreignTable;
                 }
 
                 $details['column']           = $columnName;
@@ -117,7 +125,7 @@ class LaravelDb2DocCommand extends Command
         }
         $filename = $rendered['filename'];
         $output   = $rendered['output'];
-        $path     = storage_path('app/db2doc/' . $filename);
+        $path     = $this->output_path . $filename;
         if (file_exists($path)) {
             unlink($path);
         }
@@ -144,7 +152,8 @@ class LaravelDb2DocCommand extends Command
         $collections = $this->collections;
         $output      = [];
         foreach ($collections as $table => $properties) {
-            $output[] = '### ' . Str::title($table) . PHP_EOL . PHP_EOL;
+            $table    = preg_replace('/[^A-Za-z0-9]/', ' ', $table);
+            $output[] = '### ' . title_case($table) . PHP_EOL . PHP_EOL;
             $output[] = '| Column | Type | Length | Default | Nullable | Comment |' . PHP_EOL;
             $output[] = '|--------|------|--------|---------|----------|---------|' . PHP_EOL;
             foreach ($properties as $key => $value) {
