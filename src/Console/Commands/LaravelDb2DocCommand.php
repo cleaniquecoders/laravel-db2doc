@@ -142,9 +142,9 @@ class LaravelDb2DocCommand extends Command
         return (true === $column->getUnsigned()) ? '(unsigned)' : '';
     }
 
-    private function getDefaultValue($column) 
+    private function getDefaultValue($column)
     {
-        if($column->getType()->getName() == 'boolean') {
+        if ('boolean' == $column->getType()->getName()) {
             return $column->getDefault() ? 'true' : 'false';
         }
 
@@ -153,13 +153,12 @@ class LaravelDb2DocCommand extends Command
 
     private function getExpression($status)
     {
-        if($this->option('emoji')) {
+        if ($this->option('emoji')) {
             return $status ? "\u{2705}" : "\u{274C}";
         }
-        
+
         return $status ? 'Yes' : 'No';
     }
-
 
     private function render_json_content()
     {
