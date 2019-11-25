@@ -4,6 +4,7 @@ namespace CleaniqueCoders\LaravelDB2DOC\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class LaravelDb2DocCommand extends Command
 {
@@ -176,7 +177,7 @@ class LaravelDb2DocCommand extends Command
         $output      = [];
         foreach ($collections as $table => $properties) {
             $table    = preg_replace('/[^A-Za-z0-9]/', ' ', $table);
-            $output[] = '### ' . title_case($table) . PHP_EOL . PHP_EOL;
+            $output[] = '### ' . Str::title($table) . PHP_EOL . PHP_EOL;
             $output[] = '| Column | Type | Length | Default | Nullable | Comment |' . PHP_EOL;
             $output[] = '|--------|------|--------|---------|----------|---------|' . PHP_EOL;
             foreach ($properties as $key => $value) {

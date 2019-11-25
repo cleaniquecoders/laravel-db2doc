@@ -2,6 +2,8 @@
 
 namespace CleaniqueCoders\LaravelDB2DOC\Tests;
 
+use Illuminate\Support\Arr;
+
 class CommandTest extends TestCase
 {
     /** @test */
@@ -13,7 +15,7 @@ class CommandTest extends TestCase
     /** @test */
     public function it_has_artisan_db2doc_command_registered()
     {
-        $this->assertTrue(array_has(\Artisan::all(), 'db:2doc'));
+        $this->assertTrue(Arr::has(\Artisan::all(), 'db:2doc'));
     }
 
     /** @test */
