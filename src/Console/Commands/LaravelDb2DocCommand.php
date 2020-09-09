@@ -192,14 +192,16 @@ class LaravelDb2DocCommand extends Command
 
         $schema          = join('', $output);
         $stub            = $this->getStub();
-        $database_config = config('database.' . $this->database_connection);
+        $database_config = config('database.connections.' . $this->database_connection);
+        $host = isset($database_config['host']) ? $database_config['host'] : null;
+        $port = isset($database_config['port']) ? $database_config['port'] : null;
         $output          = str_replace([
                 'APP_NAME',
                 'DB_CONNECTION', 'DB_HOST', 'DB_PORT', 'DB_DATABASE',
                 'SCHEMA_CONTENT',
             ], [
                 config('app.name'),
-                $this->database_connection, $database_config['host'], $database_config['port'], $database_config['database'],
+                $this->database_connection, $host, $port, $database_config['database'],
                 $schema,
             ], $stub);
 

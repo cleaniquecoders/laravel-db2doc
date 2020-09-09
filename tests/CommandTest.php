@@ -26,12 +26,12 @@ class CommandTest extends TestCase
         $name = config('app.name') . ' Database Schema.md';
         $this->assertFileExists(storage_path('app/db2doc/' . $name));
         unlink(storage_path('app/db2doc/' . $name));
-        $this->assertFileNotExists(storage_path('app/db2doc/' . $name));
+        $this->assertFileDoesNotExist(storage_path('app/db2doc/' . $name));
 
         $this->artisan('db:2doc', ['--database' => 'testbench', '--format' => 'json']);
         $name = config('app.name') . ' Database Schema.json';
         $this->assertFileExists(storage_path('app/db2doc/' . $name));
         unlink(storage_path('app/db2doc/' . $name));
-        $this->assertFileNotExists(storage_path('app/db2doc/' . $name));
+        $this->assertFileDoesNotExist(storage_path('app/db2doc/' . $name));
     }
 }
